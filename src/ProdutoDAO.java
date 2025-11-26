@@ -69,5 +69,40 @@ public class ProdutoDAO {
             System.out.println("ERRO ao atualizar produto: " + e.getMessage());
         }
     }
+
+    public  void excluir(int id){
+        String sql = "DELETE FROM produtos WHERE id_produtos = ?";
+        try(PreparedStatement stmt = CONEXAO_DB.prepareStatement(sql)){
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }catch (SQLException e){
+            System.out.println("Erro ao excluir produto: " + e.getMessage());
+        }
+    }
+
+
+    // Metodo para listar todos os produtos de banco de dados
+
+    public List<Produto> listarTodos(){
+        List<Produto> produtos = new ArrayList<>();
+        String sql = "SELECT * FROM produtos";
+        try(PreparedStatement stmt = CONEXAO_DB.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery()){
+            while (rs.next()){
+                Produto produto = new Produto();
+                produto.setId(rs.getInt("id_produto"));
+                produto.setNome(rs.getString("nome_produto"));
+                produto.setQuantidade(rs.getInt("quantidade"));
+                produto.setPreco(rs.getDouble("preco"));
+                produto.setStatus(rs.getString("status"));
+                produtos.add(produto);
+            }
+        }catch (SQLException e){
+            System.out.println("ERRO ao listar produtos: "+ e.getMessage());
+        }
+        return produtos;
+    }
+
 }
+
 
